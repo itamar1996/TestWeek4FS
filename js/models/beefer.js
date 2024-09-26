@@ -8,7 +8,7 @@ class Beefer {
     constructor(name) {
         this.name = name;
         this.id = 0;
-        this.status = statusEnum_1.default.manufactured;
+        this.status = statusEnum_1.default[0];
         this.detonated_at = null;
         this.longitude = 0;
         this.latitude = 0;

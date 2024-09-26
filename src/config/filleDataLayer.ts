@@ -10,9 +10,10 @@ export const getFilleData= async<T> (resource :string):Promise<T[] | void>=>{
       console.log(error);
     }
 }
+
 export const saveFilleData= async<T> (resource :string,data:T[]):Promise<boolean>=>{
     try {
-        const stringdata:string = JSON.stringify(data);
+        const stringdata:string = JSON.stringify(data, null, 2)
         await fs.writeFile(`${__dirname}/../../data/${resource}.json`,stringdata,{
             encoding:'utf-8'
         })

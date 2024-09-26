@@ -27,7 +27,7 @@ const getFilleData = (resource) => __awaiter(void 0, void 0, void 0, function* (
 exports.getFilleData = getFilleData;
 const saveFilleData = (resource, data) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const stringdata = JSON.stringify(data);
+        const stringdata = JSON.stringify(data, null, 2);
         yield promises_1.default.writeFile(`${__dirname}/../../data/${resource}.json`, stringdata, {
             encoding: 'utf-8'
         });

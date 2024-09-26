@@ -61,7 +61,6 @@ class BefferService {
         return __awaiter(this, void 0, void 0, function* () {
             let beefers = yield (0, filleDataLayer_1.getFilleData)('beefers');
             const beeferindex = beefers.findIndex(b => b.id == beeferId);
-            console.log(beeferindex);
             if (beeferindex == -1) {
                 return false;
             }
@@ -75,6 +74,11 @@ class BefferService {
             let beefers = yield (0, filleDataLayer_1.getFilleData)('beefers');
             const beefer = beefers.find(b => b.id == beeferId);
             if (!beefer) {
+                return false;
+            }
+            const currStatusIndex = statusEnum_1.default.indexOf(beefer.status);
+            const getStatusIndex = statusEnum_1.default.indexOf(status);
+            if (getStatusIndex - currStatusIndex != 1 || getStatusIndex == -1) {
                 return false;
             }
             beefer.status = status;
@@ -93,26 +97,7 @@ class BefferService {
             beefer.longitude = lon;
             return new Promise((resolve) => {
                 setTimeout(() => {
-                    beefer.status = statusEnum_1.default.detonated;
-                    resolve(true);
-                    beefer.detonated_at = new Date;
-                    (0, filleDataLayer_1.saveFilleData)('beefers', beefers);
-                }, 5000);
-            });
-        });
-    }
-    static explosionBeefer(beeferId) {
-        return __awaiter(this, void 0, void 0, function* () {
-            let beefers = yield (0, filleDataLayer_1.getFilleData)('beefers');
-            const beefer = beefers.find(b => b.id == beeferId);
-            if (!beefer) {
-                return false;
-            }
-            console.log("bummmmm");
-            return new Promise((resolve) => {
-                setTimeout(() => {
-                    beefer.status = statusEnum_1.default.detonated;
-                    console.log("fewd", beefer.status);
+                    beefer.status = statusEnum_1.default[5];
                     resolve(true);
                     beefer.detonated_at = new Date;
                     (0, filleDataLayer_1.saveFilleData)('beefers', beefers);

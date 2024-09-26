@@ -129,7 +129,7 @@ router.put('/:id/status', (req, res) => __awaiter(void 0, void 0, void 0, functi
         const { status } = req.body;
         let result;
         let mymessage = "sucses update";
-        if (status == statusEnum_1.default.deployed) {
+        if (status == statusEnum_1.default[3]) {
             const LON = req.body["LON"];
             const LAT = req.body["LAT"];
             if (!LAT || !LON) {
@@ -145,9 +145,8 @@ router.put('/:id/status', (req, res) => __awaiter(void 0, void 0, void 0, functi
         else {
             result = yield beeferSerice_1.BefferService.updateBeeferStatus(Number(req.params.id), status);
         }
-        console.log(result);
         if (!result) {
-            mymessage = "not found beefer";
+            mymessage = "not found beefer or status";
         }
         res.status(200).json({
             err: false,

@@ -32,6 +32,7 @@ router.post('/', async (
         })
     }
 })
+
 router.get('/', async (
     req:Request,
     res:Response
@@ -56,6 +57,7 @@ router.get('/', async (
         })
     }
 })
+
 router.get('/:id', async (
     req:Request,
     res:Response
@@ -80,6 +82,7 @@ router.get('/:id', async (
         })
     }
 })
+
 router.get('/status/:status', async (
     req:Request,
     res:Response
@@ -104,6 +107,7 @@ router.get('/status/:status', async (
         })
     }
 })
+
 router.delete('/:id', async (
     req:Request,
     res:Response
@@ -128,6 +132,7 @@ router.delete('/:id', async (
         })
     }
 })
+
 router.put('/:id/status', async (
     req:Request,
     res:Response
@@ -136,7 +141,7 @@ router.put('/:id/status', async (
         const {status} = req.body
         let result;
         let mymessage = "sucses update";
-        if(status == Status.deployed)
+        if(status == Status[3])
         {
             const LON = req.body["LON"]
             const LAT = req.body["LAT"]
@@ -154,11 +159,9 @@ router.put('/:id/status', async (
         else{
             result = await
         BefferService.updateBeeferStatus(Number(req.params.id),status)
-        }
-        console.log(result);
-        
+        }        
         if(!result){
-            mymessage = "not found beefer"
+            mymessage = "not found beefer or status"
         }
         res.status(200).json({
             err: false,

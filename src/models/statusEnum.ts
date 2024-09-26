@@ -1,9 +1,2 @@
-enum Status {
-    manufactured = "○manufactured",
-    assembled = "○assembled",
-    shipped = "shipped",
-    deployed = "deployed",
-    detonated = "detonated"
-  }
-
+const Status = ["manufactured","assembled","shipped","deployed","detonated"]
   export default Status

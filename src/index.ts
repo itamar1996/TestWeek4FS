@@ -1,9 +1,7 @@
 import exp, { Express } from 'express'
 import beeferControllers from './controllers/beeferControllers'
-// import postController from './controllers/postController'
-
-// load enviroment variables
 import 'dotenv/config'
+
 
 const app: Express = exp()
 app.use(exp.json());
