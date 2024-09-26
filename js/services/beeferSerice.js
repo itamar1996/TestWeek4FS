@@ -72,22 +72,17 @@ class BefferService {
     }
     static updateBeeferStatus(beeferId, status) {
         return __awaiter(this, void 0, void 0, function* () {
-            try {
-                let beefers = yield (0, filleDataLayer_1.getFilleData)('beefers');
-                const beefer = beefers.find(b => b.id == beeferId);
-                if (!beefer) {
-                    return false;
-                }
-                beefer.status = status;
-                return true;
-            }
-            catch (error) {
-                console.error("Failed to update beefer status:", error);
+            let beefers = yield (0, filleDataLayer_1.getFilleData)('beefers');
+            const beefer = beefers.find(b => b.id == beeferId);
+            if (!beefer) {
                 return false;
             }
+            beefer.status = status;
+            (0, filleDataLayer_1.saveFilleData)('beefers', beefers);
+            return true;
         });
     }
-    static explosionBeefer(beeferId, lot, lat) {
+    static explosionBeeferUpdate(beeferId, lon, lat) {
         return __awaiter(this, void 0, void 0, function* () {
             let beefers = yield (0, filleDataLayer_1.getFilleData)('beefers');
             const beefer = beefers.find(b => b.id == beeferId);
@@ -95,11 +90,31 @@ class BefferService {
                 return false;
             }
             beefer.latitude = lat;
-            beefer.longitude = lot;
+            beefer.longitude = lon;
             return new Promise((resolve) => {
                 setTimeout(() => {
                     beefer.status = statusEnum_1.default.detonated;
                     resolve(true);
+                    beefer.detonated_at = new Date;
+                    (0, filleDataLayer_1.saveFilleData)('beefers', beefers);
+                }, 5000);
+            });
+        });
+    }
+    static explosionBeefer(beeferId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let beefers = yield (0, filleDataLayer_1.getFilleData)('beefers');
+            const beefer = beefers.find(b => b.id == beeferId);
+            if (!beefer) {
+                return false;
+            }
+            console.log("bummmmm");
+            return new Promise((resolve) => {
+                setTimeout(() => {
+                    beefer.status = statusEnum_1.default.detonated;
+                    console.log("fewd", beefer.status);
+                    resolve(true);
+                    beefer.detonated_at = new Date;
                     (0, filleDataLayer_1.saveFilleData)('beefers', beefers);
                 }, 5000);
             });

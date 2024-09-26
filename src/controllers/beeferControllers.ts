@@ -11,7 +11,6 @@ router.post('/', async (
 ):Promise<void> => {
     try {
         const {name}  = req.body
-
         const result = await BefferService.createNewBeefer(name)              
         if(!result)
         {
@@ -135,25 +134,31 @@ router.put('/:id/status', async (
 ):Promise<void> => {
     try {
         const {status} = req.body
-        let LON:number = 0
-        let LAT :number = 0
+        let result;
+        let mymessage = "sucses update";
         if(status == Status.deployed)
         {
-            LON = req.body["LON"]
-            LAT = req.body["LAT"] 
-            const result = BefferService.explosionBeefer(Number(req.params.id),LON,LAT)
+            const LON = req.body["LON"]
+            const LAT = req.body["LAT"]
+            if(!LAT || !LON)
+            {
+                res.status(400).json({
+                    err: true,
+                    message: 'missing lon or lat',
+                    data: null
+                })
+                return
+            }
+            result = await      BefferService.explosionBeeferUpdate(Number(req.params.id),LON,LAT)
         }
-        console.log("status",status);
-        console.log("LON",LON);
-        console.log("LAT",LAT);
-
-        const result:boolean =true
+        else{
+            result = await
+        BefferService.updateBeeferStatus(Number(req.params.id),status)
+        }
+        console.log(result);
         
-        // const result = await BefferService.updateBeeferStatus(Number(req.params.id),status)
-        let mymessage = "sucses update";
-        if(!result)
-        {
-            mymessage = "beefer not found";
+        if(!result){
+            mymessage = "not found beefer"
         }
         res.status(200).json({
             err: false,

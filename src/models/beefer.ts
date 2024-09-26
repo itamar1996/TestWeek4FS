@@ -1,3 +1,4 @@
+import Status from "./statusEnum";
 class Beefer {
    public id:number = 0
    public status :string  = Status.manufactured

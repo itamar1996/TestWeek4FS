@@ -127,21 +127,27 @@ router.delete('/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* 
 router.put('/:id/status', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { status } = req.body;
-        let LON = 0;
-        let LAT = 0;
-        if (status == statusEnum_1.default.deployed) {
-            LON = req.body["LON"];
-            LAT = req.body["LAT"];
-            const result = beeferSerice_1.BefferService.explosionBeefer(Number(req.params.id), LON, LAT);
-        }
-        console.log("status", status);
-        console.log("LON", LON);
-        console.log("LAT", LAT);
-        const result = true;
-        // const result = await BefferService.updateBeeferStatus(Number(req.params.id),status)
+        let result;
         let mymessage = "sucses update";
+        if (status == statusEnum_1.default.deployed) {
+            const LON = req.body["LON"];
+            const LAT = req.body["LAT"];
+            if (!LAT || !LON) {
+                res.status(400).json({
+                    err: true,
+                    message: 'missing lon or lat',
+                    data: null
+                });
+                return;
+            }
+            result = yield beeferSerice_1.BefferService.explosionBeeferUpdate(Number(req.params.id), LON, LAT);
+        }
+        else {
+            result = yield beeferSerice_1.BefferService.updateBeeferStatus(Number(req.params.id), status);
+        }
+        console.log(result);
         if (!result) {
-            mymessage = "beefer not found";
+            mymessage = "not found beefer";
         }
         res.status(200).json({
             err: false,

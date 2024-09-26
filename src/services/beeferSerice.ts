@@ -7,7 +7,7 @@ export class BefferService{
         {
                 return false;
         }        
-        const beefer: Beefer = new Beefer(beeferName)
+        const beefer: Beefer = new Beefer(beeferName)        
         let beefers:Beefer[]= await getFilleData<Beefer>('beefers') as Beefer[];
         if (!beefers) beefers  = []
         beefer.id = beefers.length + 1;
@@ -48,35 +48,52 @@ export class BefferService{
         return true;
     }
     public static async updateBeeferStatus(beeferId: number, status: string): Promise<boolean> { 
-        try {
             let beefers: Beefer[] = await getFilleData<Beefer>('beefers') as Beefer[];
             const beefer: Beefer | undefined = beefers.find(b => b.id == beeferId);
             if (!beefer) {
                 return false;
             }        
             beefer.status = status
+            saveFilleData('beefers',beefers)
             return true;
-        } catch (error) {
-            console.error("Failed to update beefer status:", error);
-            return false;
-        }
     }
     
-    public static async explosionBeefer(beeferId: number,lot:number,lat:number): Promise<boolean> { 
+    public static async explosionBeeferUpdate(beeferId: number,lon:number,lat:number): Promise<boolean> { 
         let beefers: Beefer[] = await getFilleData<Beefer>('beefers') as Beefer[];
         const beefer: Beefer | undefined = beefers.find(b => b.id == beeferId);
         if (!beefer) {
             return false;
         }
         beefer.latitude = lat;
-        beefer.longitude = lot;        
+        beefer.longitude = lon;
         return new Promise((resolve) => {
             setTimeout(() => {
                 beefer.status = statusenum.detonated;
                 resolve(true);
-                saveFilleData('beefers',beefers)                
+                beefer.detonated_at = new Date
+                saveFilleData('beefers',beefers)          
             }, 5000);
         });
     }
+    public static async explosionBeefer(beeferId: number): Promise<boolean|void> { 
+        let beefers: Beefer[] = await getFilleData<Beefer>('beefers') as Beefer[];
+        const beefer: Beefer | undefined = beefers.find(b => b.id == beeferId);
+        if (!beefer) {
+            return false;
+        }    
+        console.log("bummmmm");
+        
+        return new Promise((resolve) => {
+            setTimeout(() => {
+                beefer.status = statusenum.detonated;
+                console.log("fewd",beefer.status);
+                
+                resolve(true);
+                beefer.detonated_at = new Date
+                saveFilleData('beefers',beefers)          
+            }, 5000);
+        });
+    }
+    
     
 }
