@@ -3,9 +3,7 @@ import fs from 'fs/promises'
 export const getFilleData= async<T> (resource :string):Promise<T[] | void>=>{
     try {
         const data: string = await fs.readFile(`${__dirname}/../../data/${resource}.json`, 
-            "utf-8");
-            console.log(data);
-            
+            "utf-8");            
         const parsedata:T[] = JSON.parse(data);
         return parsedata;
     } catch (error) {

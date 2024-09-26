@@ -1,4 +1,5 @@
 import Beefer from "../models/beefer"
+import statusenum from "../models/statusEnum"
 import { getFilleData, saveFilleData } from "../config/filleDataLayer"
 export class BefferService{
     public static async createNewBeefer(beeferName: string): Promise<boolean>{
@@ -46,45 +47,36 @@ export class BefferService{
         saveFilleData<Beefer>('beefers',beefers)
         return true;
     }
-    public static async updateBeeferStatus(beeferId :number,status :Status): Promise<boolean>{  
-        let beefers:Beefer[]= await getFilleData<Beefer>('beefers') as Beefer[];
-        const beeferindex:number = beefers.findIndex(b=>b.id == beeferId)
-        console.log(beeferindex);
-        if(beeferindex == -1)
-        {
+    public static async updateBeeferStatus(beeferId: number, status: string): Promise<boolean> { 
+        try {
+            let beefers: Beefer[] = await getFilleData<Beefer>('beefers') as Beefer[];
+            const beefer: Beefer | undefined = beefers.find(b => b.id == beeferId);
+            if (!beefer) {
+                return false;
+            }        
+            beefer.status = status
+            return true;
+        } catch (error) {
+            console.error("Failed to update beefer status:", error);
             return false;
         }
-        beefers.splice(beeferindex,1)
-        saveFilleData<Beefer>('beefers',beefers)
-        return true;
     }
-    // public static async findUser(userId: string): Promise<User | undefined>{
-    //     let users:User[]= await getFilleData<User>('users') as User[];
-    //     let user : User | undefined = users.find(u=>u.id==userId)
-    //     console.log(userId);
-        
-    //     if(user){
-    //         return user;
-    //     }
-    //     return user;
-        
-    // }
-    // public static async folow(followerId: string,followingId:string): Promise<boolean>{
-    //     let users:User[]= await getFilleData<User>('users') as User[];
-    //     let follower : User | undefined = users.find(u=>u.id==followerId)
-    //     const following : User | undefined = users.find(u=>u.id==followingId)
-    //     if(!follower||!following){
-    //         return false;
-    //     }
-    //     if(follower.folowing.includes(followingId)){
-    //         console.log("כבר עוקב");
-            
-    //         return false;
-    //     }
-    //     following.folowers.push(followerId)
-    //     follower.folowing.push(followingId)
-    //     saveFilleData("users",users)
-    //     return true;
-        
-    // }
+    
+    public static async explosionBeefer(beeferId: number,lot:number,lat:number): Promise<boolean> { 
+        let beefers: Beefer[] = await getFilleData<Beefer>('beefers') as Beefer[];
+        const beefer: Beefer | undefined = beefers.find(b => b.id == beeferId);
+        if (!beefer) {
+            return false;
+        }
+        beefer.latitude = lat;
+        beefer.longitude = lot;        
+        return new Promise((resolve) => {
+            setTimeout(() => {
+                beefer.status = statusenum.detonated;
+                resolve(true);
+                saveFilleData('beefers',beefers)                
+            }, 5000);
+        });
+    }
+    
 }

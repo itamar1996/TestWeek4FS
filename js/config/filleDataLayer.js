@@ -17,7 +17,6 @@ const promises_1 = __importDefault(require("fs/promises"));
 const getFilleData = (resource) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const data = yield promises_1.default.readFile(`${__dirname}/../../data/${resource}.json`, "utf-8");
-        console.log(data);
         const parsedata = JSON.parse(data);
         return parsedata;
     }

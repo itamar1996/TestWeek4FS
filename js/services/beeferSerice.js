@@ -14,6 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.BefferService = void 0;
 const beefer_1 = __importDefault(require("../models/beefer"));
+const statusEnum_1 = __importDefault(require("../models/statusEnum"));
 const filleDataLayer_1 = require("../config/filleDataLayer");
 class BefferService {
     static createNewBeefer(beeferName) {
@@ -71,15 +72,37 @@ class BefferService {
     }
     static updateBeeferStatus(beeferId, status) {
         return __awaiter(this, void 0, void 0, function* () {
-            let beefers = yield (0, filleDataLayer_1.getFilleData)('beefers');
-            const beeferindex = beefers.findIndex(b => b.id == beeferId);
-            console.log(beeferindex);
-            if (beeferindex == -1) {
+            try {
+                let beefers = yield (0, filleDataLayer_1.getFilleData)('beefers');
+                const beefer = beefers.find(b => b.id == beeferId);
+                if (!beefer) {
+                    return false;
+                }
+                beefer.status = status;
+                return true;
+            }
+            catch (error) {
+                console.error("Failed to update beefer status:", error);
                 return false;
             }
-            beefers.splice(beeferindex, 1);
-            (0, filleDataLayer_1.saveFilleData)('beefers', beefers);
-            return true;
+        });
+    }
+    static explosionBeefer(beeferId, lot, lat) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let beefers = yield (0, filleDataLayer_1.getFilleData)('beefers');
+            const beefer = beefers.find(b => b.id == beeferId);
+            if (!beefer) {
+                return false;
+            }
+            beefer.latitude = lat;
+            beefer.longitude = lot;
+            return new Promise((resolve) => {
+                setTimeout(() => {
+                    beefer.status = statusEnum_1.default.detonated;
+                    resolve(true);
+                    (0, filleDataLayer_1.saveFilleData)('beefers', beefers);
+                }, 5000);
+            });
         });
     }
 }

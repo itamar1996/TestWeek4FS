@@ -1,6 +1,7 @@
 import exp, { Request, Response, Router } from 'express'
 import { BefferService } from '../services/beeferSerice'
 import Beefer from '../models/beefer'
+import Status from '../models/statusEnum'
 
 const router:Router = exp.Router()
 
@@ -134,10 +135,30 @@ router.put('/:id/status', async (
 ):Promise<void> => {
     try {
         const {status} = req.body
+        let LON:number = 0
+        let LAT :number = 0
+        if(status == Status.deployed)
+        {
+            LON = req.body["LON"]
+            LAT = req.body["LAT"] 
+            const result = BefferService.explosionBeefer(Number(req.params.id),LON,LAT)
+        }
+        console.log("status",status);
+        console.log("LON",LON);
+        console.log("LAT",LAT);
+
+        const result:boolean =true
+        
+        // const result = await BefferService.updateBeeferStatus(Number(req.params.id),status)
+        let mymessage = "sucses update";
+        if(!result)
+        {
+            mymessage = "beefer not found";
+        }
         res.status(200).json({
             err: false,
-            message: 'I was way too lazy to change the default message',
-            data: undefined
+            message: mymessage,
+            data: result
         })
     } catch (err) {
         res.status(400).json({

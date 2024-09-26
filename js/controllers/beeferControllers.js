@@ -14,6 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const beeferSerice_1 = require("../services/beeferSerice");
+const statusEnum_1 = __importDefault(require("../models/statusEnum"));
 const router = express_1.default.Router();
 router.post('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -126,10 +127,26 @@ router.delete('/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* 
 router.put('/:id/status', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { status } = req.body;
+        let LON = 0;
+        let LAT = 0;
+        if (status == statusEnum_1.default.deployed) {
+            LON = req.body["LON"];
+            LAT = req.body["LAT"];
+            const result = beeferSerice_1.BefferService.explosionBeefer(Number(req.params.id), LON, LAT);
+        }
+        console.log("status", status);
+        console.log("LON", LON);
+        console.log("LAT", LAT);
+        const result = true;
+        // const result = await BefferService.updateBeeferStatus(Number(req.params.id),status)
+        let mymessage = "sucses update";
+        if (!result) {
+            mymessage = "beefer not found";
+        }
         res.status(200).json({
             err: false,
-            message: 'I was way too lazy to change the default message',
-            data: undefined
+            message: mymessage,
+            data: result
         });
     }
     catch (err) {
