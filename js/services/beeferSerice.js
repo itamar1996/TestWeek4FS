@@ -90,6 +90,13 @@ class BefferService {
         return __awaiter(this, void 0, void 0, function* () {
             let beefers = yield (0, filleDataLayer_1.getFilleData)('beefers');
             const beefer = beefers.find(b => b.id == beeferId);
+            const persons = yield (0, filleDataLayer_1.getFilleData)('persons');
+            const person = persons.find(p => p.beeferId == beeferId);
+            if (person) {
+                person.status = false;
+                console.log(person);
+                // await saveFilleData("persons",persons)
+            }
             if (!beefer) {
                 return false;
             }
@@ -97,10 +104,11 @@ class BefferService {
             beefer.longitude = lon;
             return new Promise((resolve) => {
                 setTimeout(() => {
-                    beefer.status = statusEnum_1.default[5];
+                    beefer.status = statusEnum_1.default[4];
                     resolve(true);
                     beefer.detonated_at = new Date;
                     (0, filleDataLayer_1.saveFilleData)('beefers', beefers);
+                    (0, filleDataLayer_1.saveFilleData)("persons", persons);
                 }, 5000);
             });
         });

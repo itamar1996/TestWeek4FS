@@ -1,6 +1,7 @@
 import Beefer from "../models/beefer"
 import statusenum from "../models/statusEnum"
 import { getFilleData, saveFilleData } from "../config/filleDataLayer"
+import Person from "../models/person";
 export class BefferService{
 
     public static async createNewBeefer(beeferName: string): Promise<boolean>{
@@ -71,6 +72,13 @@ export class BefferService{
     public static async explosionBeeferUpdate(beeferId: number,lon:number,lat:number): Promise<boolean> { 
         let beefers: Beefer[] = await getFilleData<Beefer>('beefers') as Beefer[];
         const beefer: Beefer | undefined = beefers.find(b => b.id == beeferId);
+        const persons :Person[] = await getFilleData<Person>('persons') as Person[];
+        const person:Person|undefined = persons.find(p=>p.beeferId == beeferId);
+        if(person){
+            person.status = false
+            console.log(person);       
+            // await saveFilleData("persons",persons)
+        }
         if (!beefer) {
             return false;
         }
@@ -78,10 +86,11 @@ export class BefferService{
         beefer.longitude = lon;
         return new Promise((resolve) => {
             setTimeout(() => {
-                beefer.status = statusenum[5];
+                beefer.status = statusenum[4];
                 resolve(true);
                 beefer.detonated_at = new Date
-                saveFilleData('beefers',beefers)          
+                saveFilleData('beefers',beefers)   
+                saveFilleData("persons",persons)       
             }, 5000);
         });
     }
